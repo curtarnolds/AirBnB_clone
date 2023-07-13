@@ -32,3 +32,8 @@ class FileStorage:
                 __class__.__objects = json.load(json_file)
         except FileNotFoundError:
             pass
+
+    @classmethod
+    def delete(cls, key):
+        """Deletes key from __objects."""
+        __class__.__objects.pop(key)
