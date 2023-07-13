@@ -2,11 +2,11 @@
 """A console program containing the entry point of the command interpreter."""
 from models.base_model import BaseModel  # noqa
 from models.user import User  # noqa
-from models.amenity import Amenity # noqa
-from models.city import City # noqa
-from models.place import Place # noqa
-from models.review import Review # noqa
-from models.state import State # noqa
+from models.amenity import Amenity  # noqa
+from models.city import City  # noqa
+from models.place import Place  # noqa
+from models.review import Review  # noqa
+from models.state import State  # noqa
 from models import storage
 import cmd
 
@@ -20,6 +20,15 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self) -> bool:
         """Override emptyline behaviour."""
         pass
+
+    def precmd(self, line: str) -> str:
+        """Preprocess command to allow retrieval
+        of all instances of a class."""
+        argv = line.rstrip('()').split('.')
+        if argv[0] in __class__.__cls_list:
+            return f"{argv[1]} {argv[0]}"
+        else:
+            return super().precmd(line)
 
     def do_create(self, line):
         """Create a new instance of BaseModel, saves it and prints the id."""
@@ -117,6 +126,17 @@ class HBNBCommand(cmd.Cmd):
             print(strp_val)
             setattr(tmp, argv[2], strp_val)
             tmp.save()
+
+    def do_count(self, line):
+        """Retrieve the number of instances of a class."""
+        argv = line.split()
+        if len(argv) < 1:
+            print("** class name missing **")
+        elif argv[0] not in __class__.__cls_list:
+            print("** class doesn't exist **")
+        else:
+            print(len([obj['__class__'] for obj in storage.all().values()
+                       if obj['__class__'] == argv[0]]))
 
     def do_quit(self, line):
         """Exits the program."""
