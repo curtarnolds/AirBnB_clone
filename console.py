@@ -1,16 +1,21 @@
 #!/usr/bin/python3
 """A console program containing the entry point of the command interpreter."""
-import cmd
 from models.base_model import BaseModel  # noqa
-from models.engine.file_storage import FileStorage
-from models import storage
 from models.user import User  # noqa
+from models.amenity import Amenity # noqa
+from models.city import City # noqa
+from models.place import Place # noqa
+from models.review import Review # noqa
+from models.state import State # noqa
+from models import storage
+import cmd
 
 
 class HBNBCommand(cmd.Cmd):
     """Defines a command interpreter."""
     prompt = '(hbnb) '
-    __cls_list = ['BaseModel', 'User']
+    __cls_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
+                  'Review']
 
     def emptyline(self) -> bool:
         """Override emptyline behaviour."""
@@ -61,7 +66,7 @@ class HBNBCommand(cmd.Cmd):
         elif f'{argv[0]}.{argv[1]}' not in storage.all().keys():
             print("** no instance found **")
         else:
-            FileStorage.delete(f'{argv[0]}.{argv[1]}')
+            storage.delete(f'{argv[0]}.{argv[1]}')
             storage.save()
 
     def do_all(self, line):
