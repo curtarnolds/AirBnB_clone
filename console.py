@@ -8,7 +8,7 @@ from models.place import Place  # noqa
 from models.review import Review  # noqa
 from models.state import State  # noqa
 from models import storage
-import re  # noqa
+import re
 import cmd
 
 
@@ -128,7 +128,13 @@ class HBNBCommand(cmd.Cmd):
 
             obj = objs[obj_key]
             tmp = eval(f"{argv[0]}(**{obj})")
-            setattr(tmp, argv[2], argv[3])
+            try:
+                _idx = 0
+                while argv[2 + _idx] and argv[3 + _idx]:
+                    setattr(tmp, argv[2 + _idx], argv[3 + _idx])
+                    _idx = _idx + 2
+            except IndexError:
+                pass
             tmp.save()
 
     def do_count(self, line):

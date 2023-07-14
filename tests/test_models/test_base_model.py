@@ -1,9 +1,7 @@
 #!/usr/bin/python3
+"""Unit Test Suite for BaseModel class."""
 import unittest
 
 
 class BaseModelTest(unittest.TestCase):
-    """Test Class for the BaseModel module."""
-    def testid(self):
-        """Check if `id` is a string"""
-        pass
+    pass
