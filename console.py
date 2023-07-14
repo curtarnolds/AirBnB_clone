@@ -20,13 +20,13 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self) -> bool:
         """Override emptyline behaviour."""
-        pass
+        return cmd.Cmd.emptyline(self)
 
     def precmd(self, line: str) -> str:
         """Preprocess command to allow retrieval
         of all instances of a class."""
         argv = re.findall(r'"[^"]+"|\b\w+\b', line)
-        if argv[0] in __class__.__cls_list:
+        if len(argv) > 0 and argv[0] in __class__.__cls_list:
             return f"{argv[1]} {argv[0]} {' '.join(argv[2:])}"
         else:
             return super().precmd(line)
