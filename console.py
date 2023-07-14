@@ -8,6 +8,7 @@ from models.place import Place  # noqa
 from models.review import Review  # noqa
 from models.state import State  # noqa
 from models import storage
+import re  # noqa
 import cmd
 
 
@@ -24,15 +25,16 @@ class HBNBCommand(cmd.Cmd):
     def precmd(self, line: str) -> str:
         """Preprocess command to allow retrieval
         of all instances of a class."""
-        argv = line.rstrip('()').split('.')
+        argv = re.findall(r'"[^"]+"|\b\w+\b', line)
         if argv[0] in __class__.__cls_list:
-            return f"{argv[1]} {argv[0]}"
+            return f"{argv[1]} {argv[0]} {' '.join(argv[2:])}"
         else:
             return super().precmd(line)
 
     def do_create(self, line):
         """Create a new instance of BaseModel, saves it and prints the id."""
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
         elif argv[0] not in __class__.__cls_list:
@@ -45,11 +47,11 @@ class HBNBCommand(cmd.Cmd):
         """Print the string representation of an instance based
         on the class name and id.
         """
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in [val['__class__']
-                             for val in storage.all().values()]:
+        elif argv[0] not in __class__.__cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -64,7 +66,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, line):
         """Deletes an instance based on the class name and id."""
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
         elif argv[0] not in [val['__class__']
@@ -82,10 +85,11 @@ class HBNBCommand(cmd.Cmd):
         """Print all string representation of instances based or not on
         the class name.
         """
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
+
         if len(argv) > 0:
-            if argv[0] not in [val['__class__']
-                               for val in storage.all().values()]:
+            if argv[0] not in __class__.__cls_list:
                 print("** class doesn't exist **")
             else:
                 print([str(eval(f'{argv[0]}(**{value})')) for value in
@@ -99,7 +103,9 @@ class HBNBCommand(cmd.Cmd):
         """Update an instance based on the class name and id by adding or
         updating attribute.
         """
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
+
         if len(argv) < 1:
             print("** class name missing **")
         elif argv[0] not in [val['__class__']
@@ -122,14 +128,13 @@ class HBNBCommand(cmd.Cmd):
 
             obj = objs[obj_key]
             tmp = eval(f"{argv[0]}(**{obj})")
-            strp_val = argv[3].strip('\"\'')
-            print(strp_val)
-            setattr(tmp, argv[2], strp_val)
+            setattr(tmp, argv[2], argv[3])
             tmp.save()
 
     def do_count(self, line):
         """Retrieve the number of instances of a class."""
-        argv = line.split()
+        argv = [item.strip('"') for item in re.split(
+            r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
         elif argv[0] not in __class__.__cls_list:
