@@ -2,3 +2,4 @@ build_dir
 __pycache__/
 trial/
 *.json
+test_*
