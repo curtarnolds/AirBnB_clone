@@ -28,7 +28,7 @@ class TestBaseModel(unittest.TestCase):
         """
         b = BaseModel()
         self.assertEqual(str(b),
-                         "[BaseModel] ({}) {}".format(b.id, b.__dict__))
+                         "[BaseModel] ({}) <{}>".format(b.id, b.__dict__))
 
     def test_ids_is_unique(self):
         """
