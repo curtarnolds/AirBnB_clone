@@ -46,7 +46,7 @@ class FileStorage:
                 for key, value in json.load(json_file).items():
                     tmp_obj = eval(f'{value["__class__"]}(**{value})')
                     self.__objects[key] = tmp_obj
-        except FileNotFoundError:
+        except Exception:
             pass
 
     def delete(cls, key):
