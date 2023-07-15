@@ -62,7 +62,7 @@ class HBNBCommand(cmd.Cmd):
             objs = storage.all()
             obj_key = f"{argv[0]}.{argv[1]}"
             obj = objs[obj_key]
-            tmp = eval(f"{argv[0]}(**{obj})")
+            tmp = eval(f"{argv[0]}(**{obj.to_dict()})")
             print(tmp)
 
     def do_destroy(self, line):
@@ -92,12 +92,12 @@ class HBNBCommand(cmd.Cmd):
             if argv[0] not in __class__.__cls_list:
                 print("** class doesn't exist **")
             else:
-                print([str(eval(f'{argv[0]}(**{value})')) for value in
-                       storage.all().values() if value['__class__'] ==
+                print([str(value) for value
+                       in storage.all().values() if value.__class__.__name__ ==
                        argv[0]])
         else:
-            print([str(eval(f"{value['__class__']}(**{value})")) for value
-                   in storage.all().values()])
+            print([str(value) for
+                   value in storage.all().values()])
 
     def do_update(self, line):
         """Update an instance based on the class name and id by adding or
@@ -109,8 +109,7 @@ class HBNBCommand(cmd.Cmd):
 
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in [val['__class__']
-                             for val in storage.all().values()]:
+        elif argv[0] not in __class__.__cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -123,20 +122,18 @@ class HBNBCommand(cmd.Cmd):
         else:
             objs = storage.all()
             obj_key = f"{argv[0]}.{argv[1]}"
-            if obj_key not in objs.keys():
+            if obj_key in objs.keys():
+                obj = objs[obj_key]
+                try:
+                    _idx = 0
+                    while argv[2 + _idx] and argv[3 + _idx]:
+                        setattr(obj, argv[2 + _idx], argv[3 + _idx])
+                        _idx = _idx + 2
+                    obj.save()
+                except IndexError:
+                    pass
+            else:
                 print("** no instance found **")
-                return
-
-            obj = objs[obj_key]
-            tmp = eval(f"{argv[0]}(**{obj})")
-            try:
-                _idx = 0
-                while argv[2 + _idx] and argv[3 + _idx]:
-                    setattr(tmp, argv[2 + _idx], argv[3 + _idx])
-                    _idx = _idx + 2
-                tmp.save()
-            except IndexError:
-                pass
 
     def do_count(self, line):
         """Retrieve the number of instances of a class."""
@@ -147,8 +144,8 @@ class HBNBCommand(cmd.Cmd):
         elif argv[0] not in __class__.__cls_list:
             print("** class doesn't exist **")
         else:
-            print(len([obj['__class__'] for obj in storage.all().values()
-                       if obj['__class__'] == argv[0]]))
+            print(len([obj for obj in storage.all().values()
+                       if obj.__class__.__name__ == argv[0]]))
 
     def do_quit(self, line):
         """Exits the program."""
