@@ -20,7 +20,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self) -> bool:
         """Override emptyline behaviour."""
-        return cmd.Cmd.emptyline(self)
+        pass
 
     def precmd(self, line: str) -> str:
         """Preprocess command to allow retrieval
@@ -70,8 +70,7 @@ class HBNBCommand(cmd.Cmd):
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in [val['__class__']
-                             for val in storage.all().values()]:
+        elif argv[0] not in __class__.__cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -103,6 +102,7 @@ class HBNBCommand(cmd.Cmd):
         """Update an instance based on the class name and id by adding or
         updating attribute.
         """
+        print(line)
         argv = [item.strip('"') for item in re.split(
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
 

@@ -9,6 +9,7 @@ class FileStorage:
     __objects = {}
 
     def __init__(self) -> None:
+        """Initialize an instance of FileStorage."""
         pass
 
     def all(self) -> dict:
