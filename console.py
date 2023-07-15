@@ -157,6 +157,19 @@ class HBNBCommand(cmd.Cmd):
         """Exits the program."""
         return True
 
+    def help_quit(self):
+        print('\n'.join([
+            'Usage:',
+            "\tquit"
+        ]))
+
+    def help_EOF(self):
+        print('\n'.join([
+            'Usage:',
+            "\tWindows/Linux: Ctrl+D",
+            "\tMac: Cmd+D"
+        ]))
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
