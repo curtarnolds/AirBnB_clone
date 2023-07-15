@@ -14,7 +14,7 @@ import cmd
 
 class HBNBCommand(cmd.Cmd):
     """Defines a command interpreter."""
-    prompt = '(hbnb)'
+    prompt = '(hbnb) '
     __cls_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
                   'Review']
 
