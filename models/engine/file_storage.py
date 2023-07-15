@@ -37,7 +37,6 @@ class FileStorage:
             for key, value in self.__objects.items():
                 tmp_storage[key] = value.to_dict()
             json.dump(tmp_storage, json_file)
-            print(tmp_storage)
 
     def reload(self) -> None:
         """Deserialize JSON file specified in `__file_path` to `__objects`"""
