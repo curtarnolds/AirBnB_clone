@@ -41,6 +41,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             tmp_instance = eval(f"{argv[0]}()")
+            storage.save()
             print(tmp_instance.id)
 
     def do_show(self, line):
@@ -133,9 +134,9 @@ class HBNBCommand(cmd.Cmd):
                 while argv[2 + _idx] and argv[3 + _idx]:
                     setattr(tmp, argv[2 + _idx], argv[3 + _idx])
                     _idx = _idx + 2
+                tmp.save()
             except IndexError:
                 pass
-            tmp.save()
 
     def do_count(self, line):
         """Retrieve the number of instances of a class."""

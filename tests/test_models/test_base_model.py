@@ -2,7 +2,7 @@
 """Unit Test Suite for BaseModel class."""
 import unittest
 from time import sleep
-import os
+import os # noqa
 from datetime import datetime
 from uuid import uuid4
 

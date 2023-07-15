@@ -3,13 +3,13 @@
 """
 import uuid
 import datetime
-from models import storage
 
 
 class BaseModel:
     """Defines common attributes/methods of other classes."""
     def __init__(self, *args, **kwargs) -> None:
         """Initialize a BaseModel instance."""
+        from models import storage
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -23,7 +23,6 @@ class BaseModel:
             self.created_at = datetime.datetime.now()
             self.updated_at = self.created_at
             storage.new(self)
-            storage.save()
 
     def __str__(self) -> str:
         """Return the string representation of the BaseModel instance."""
@@ -31,8 +30,8 @@ class BaseModel:
 
     def save(self) -> None:
         """Log the time BaseModel instance was updated."""
+        from models import storage
         self.updated_at = datetime.datetime.now()
-        storage.new(self)
         storage.save()
 
     def to_dict(self) -> dict:
