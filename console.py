@@ -14,7 +14,7 @@ import cmd
 
 class HBNBCommand(cmd.Cmd):
     """Defines a command interpreter."""
-    prompt = '(hbnb) '
+    prompt = '(hbnb)'
     __cls_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
                   'Review']
 
@@ -156,6 +156,19 @@ class HBNBCommand(cmd.Cmd):
     def do_EOF(self, line):
         """Exits the program."""
         return True
+
+    def help_quit(self):
+        print('\n'.join([
+            'Usage:',
+            "\tquit"
+        ]))
+
+    def help_EOF(self):
+        print('\n'.join([
+            'Usage:',
+            "\tWindows/Linux: Ctrl+D",
+            "\tMac: Cmd+D"
+        ]))
 
 
 if __name__ == '__main__':
