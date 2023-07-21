@@ -12,11 +12,46 @@ import re
 import cmd
 
 
+def to_list(argv: str) -> list:
+    """Convert a string to a list."""
+    return [item.strip('"') for item in re.findall(r'"[^"]+"|\b\w+\b', argv)]
+
+
+def validate_class_name(class_name: str) -> bool:
+    """Validate a class name"""
+    return class_name in HBNBCommand.cls_list
+
+
+def check_args(line: str) -> bool:
+    """Check the number and kind of arguments passed in interpreter."""
+    import inspect
+    caller_name = inspect.currentframe().f_back.f_code.co_name
+    argv = [item.strip('"')
+            for item in re.findall(r'"[^"]+"|\b\w+\b', line) if item]
+    if len(argv) < 1:
+        print("** class name missing **")
+    elif not validate_class_name(argv[0]):
+        print("** class doesn't exist **")
+    elif len(argv) == 1:
+        if caller_name != 'do_create':
+            print("** instance id missing **")
+        else:
+            return argv
+    elif f'{argv[0]}.{argv[1]}' not in storage.all().keys():
+        print("** no instance found **")
+    elif caller_name == "do_update" and len(argv) == 2:
+        print("** attribute name missing **")
+    elif caller_name == "do_update" and len(argv) == 3:
+        print("** value missing **")
+    else:
+        return argv
+
+
 class HBNBCommand(cmd.Cmd):
     """Defines a command interpreter."""
     prompt = '(hbnb) '
-    __cls_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
-                  'Review']
+    cls_list = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place',
+                'Review']
 
     def emptyline(self) -> bool:
         """Override emptyline behaviour."""
@@ -26,18 +61,19 @@ class HBNBCommand(cmd.Cmd):
         """Preprocess command to allow retrieval
         of all instances of a class."""
         argv = re.findall(r'"[^"]+"|\b\w+\b', line)
-        if len(argv) > 0 and argv[0] in __class__.__cls_list:
+        # argv = [item.strip('"') for item in re.findall(r'"[^"]+"|\b\w+\b', line)] # noqa
+        if len(argv) > 0 and validate_class_name(argv[0]):
             return f"{argv[1]} {argv[0]} {' '.join(argv[2:])}"
         else:
             return super().precmd(line)
 
-    def do_create(self, line):
+    def do_create(self, line: str) -> None:
         """Create a new instance of BaseModel, saves it and prints the id."""
         argv = [item.strip('"') for item in re.split(
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in __class__.__cls_list:
+        elif argv[0] not in __class__.cls_list:
             print("** class doesn't exist **")
         else:
             tmp_instance = eval(f"{argv[0]}()")
@@ -52,7 +88,7 @@ class HBNBCommand(cmd.Cmd):
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in __class__.__cls_list:
+        elif argv[0] not in __class__.cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -71,7 +107,7 @@ class HBNBCommand(cmd.Cmd):
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in __class__.__cls_list:
+        elif argv[0] not in __class__.cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -89,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
 
         if len(argv) > 0:
-            if argv[0] not in __class__.__cls_list:
+            if argv[0] not in __class__.cls_list:
                 print("** class doesn't exist **")
             else:
                 print([str(value) for value
@@ -103,13 +139,12 @@ class HBNBCommand(cmd.Cmd):
         """Update an instance based on the class name and id by adding or
         updating attribute.
         """
-        print(line)
         argv = [item.strip('"') for item in re.split(
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
 
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in __class__.__cls_list:
+        elif argv[0] not in __class__.cls_list:
             print("** class doesn't exist **")
         elif len(argv) == 1:
             print("** instance id missing **")
@@ -141,7 +176,7 @@ class HBNBCommand(cmd.Cmd):
             r'\s+(?=(?:[^"]*"[^"]*")*[^"]*$)', line) if item]
         if len(argv) < 1:
             print("** class name missing **")
-        elif argv[0] not in __class__.__cls_list:
+        elif argv[0] not in __class__.cls_list:
             print("** class doesn't exist **")
         else:
             print(len([obj for obj in storage.all().values()
