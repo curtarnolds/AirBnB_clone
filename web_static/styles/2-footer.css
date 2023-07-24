@@ -1,0 +1,14 @@
+footer {
+	background-color: #00ff00;
+	height: 60px;
+	width: 100%;
+	position: absolute;
+	top: 100%;
+	display: grid;
+}
+
+footer>span {
+	display: grid;
+	text-align: center;
+	place-items: center;
+}
