@@ -2,13 +2,10 @@ footer {
 	background-color: white;
 	height: 60px;
 	width: 100%;
-	border-top: 1px solid #ccc;
-	position: fixed;
-	line-height: 60px;
+	position: absolute;
 	bottom: 0;
-	display: grid;
-}
-
-footer>span{
-	margin: auto;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-top: 1px solid #cccccc;
 }
